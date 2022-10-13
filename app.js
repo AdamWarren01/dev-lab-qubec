@@ -15,8 +15,8 @@ MongoClient.connect(process.env.MONGO_URI, {
     useUnifiedTopology: true}) 
     .then(client =>{
       console.log('connected to db')
-      const db = client.db('roster')
-      const playersCollection = db.collection('players')  
+      const db = client.db('movies')
+      const playersCollection = db.collection('films')  
       
       app.set('view engine', 'ejs')
       app.use(bodyParser.urlencoded({ extended: true }))
@@ -25,7 +25,7 @@ MongoClient.connect(process.env.MONGO_URI, {
       
 
       app.get('/', (req, res) => {
-        db.collection('players').find().toArray()
+        db.collection('films').find().toArray()
           .then(results => {
             res.render('index.ejs', { players: results})
           })
@@ -33,7 +33,7 @@ MongoClient.connect(process.env.MONGO_URI, {
         // res.render('index.ejs', {})  
       })
 
-      app.post('/players', (req, res) => {
+      app.post('/films', (req, res) => {
         playersCollection.insertOne(req.body)
           .then(result => {
             res.redirect('/')
@@ -41,11 +41,11 @@ MongoClient.connect(process.env.MONGO_URI, {
           .catch(error => console.error(error))
       })
 
-      app.post('/players', (req,res) => {
+      app.post('/films', (req,res) => {
           console.log(req.body);
       })
 
-      app.post('/deletePlayer/:id', async (req,res)=>{
+      app.post('/deleteFilm/:id', async (req,res)=>{
       
         let result = await playersCollection.findOneAndDelete( 
           {
@@ -59,17 +59,12 @@ MongoClient.connect(process.env.MONGO_URI, {
         .catch(error => console.error(error))
       })
 
-      app.post('/updatePlayer/:id', async (req,res) => {
+      app.post('/updateFilm/:id', async (req,res) => {
         let result = await playersCollection.findOneAndUpdate(
           {
             "_id": ObjectId(req.params.id)
           },
-          {
-            $set: {
-              name: 'Peyton Manning',
-              position: 'QB',
-              number: 18
-            }
+ 
           }
         )
         .then(result => {
