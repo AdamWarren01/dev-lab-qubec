@@ -65,7 +65,7 @@ MongoClient.connect(process.env.MONGO_URI, {
             "_id": ObjectId(req.params.id)
           },
  
-          }
+          
         )
         .then(result => {
           console.log(result); 
