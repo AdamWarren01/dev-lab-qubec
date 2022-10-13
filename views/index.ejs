@@ -2,32 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>MY APP</title>
+  <title>AdamDB</title>
 </head>
 <body>
-  <h1> Player Roster </h1>
+  <h1> List Some Movies </h1>
 
   <form action="/players" method="POST">
     <input type="text" placeholder="name" name="name"> <br>
-    <input type="text" placeholder="position" name="position"> <br>
-    <input type="number" placeholder="number" name="number"> <br>
+    <input type="text" placeholder="position" name="director"> <br>
     <button type="submit">Submit</button>
   </form>
 
   <br>
 
   <ul class = "players">
-    <% for(var i = 0; i < players.length; i++) {%>
+    <% for(var i = 0; i < films.length; i++) {%>
     <li class = "player">
-        <span>Name: <%= players[i].name %></span><br>
-        <span>Position: <%= players[i].position %></span><br>
-        <span>Number: <%= players[i].number %></span><br>
+        <span>Name: <%= films[i].name %></span><br>
+        <span>director: <%= films[i].director %></span><br>
         <!-- this will be for delete -->
-        <form method="post" action="/deletePlayer/<%= players[i]._id %>">
-          <input type="submit" value = "Delete" onClick="return confirm('u sure bro`?')" />
+        <form method="post" action="/deleteFilm/<%= films[i]._id %>">
+          <input type="submit" value = "Delete" onClick="return confirm('Want to Delete this film?')" />
         </form>
-        <form method="post" action="/updatePlayer/<%= players[i]._id %>">
-          <input type="submit" value = "Update" onClick="return confirm('u fr wanna update tho?')" />
+        <form method="post" action="/updateFilm/<%= films[i]._id %>">
+          <input type="submit" value = "Update" onClick="return confirm('Please confirm updating the film')" />
         </form>
         <div> <br> </div>
     </li>
