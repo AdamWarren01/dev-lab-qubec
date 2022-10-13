@@ -7,7 +7,7 @@
 <body>
   <h1> List Some Movies </h1>
 
-  <form action="/players" method="POST">
+  <form action="/films" method="POST">
     <input type="text" placeholder="name" name="name"> <br>
     <input type="text" placeholder="position" name="director"> <br>
     <button type="submit">Submit</button>
@@ -15,11 +15,11 @@
 
   <br>
 
-  <ul class = "players">
+  <ul class = "films">
     <% for(var i = 0; i < films.length; i++) {%>
-    <li class = "player">
-        <span>Name: <%= films[i].name %></span><br>
-        <span>director: <%= films[i].director %></span><br>
+    <li class = "film">
+        <span>Name: <%= films[i].status %></span><br>
+        <span>director: <%= films[i].text %></span><br>
         <!-- this will be for delete -->
         <form method="post" action="/deleteFilm/<%= films[i]._id %>">
           <input type="submit" value = "Delete" onClick="return confirm('Want to Delete this film?')" />
@@ -33,6 +33,6 @@
   </ul>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-<script src="/index.js"></script>
+<script src="public/index.js"></script>
 
 </html>

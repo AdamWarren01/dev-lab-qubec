@@ -1,40 +1,52 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const bodyParser = require('body-parser');
-const { urlencoded } = require('body-parser');
+require("dotenv").config();
+const express = require('express')
+const bodyParser = require('body-parser')
+const { urlencoded } = require('body-parser')
 const MongoClient = require('mongodb').MongoClient
-const app = express();
-const { ObjectId } = require('mongodb');
+const app = express()
+const { ObjectId } = require('mongodb')
 
-dotenv.config({path:'config.env'});
+//dotenv.config({path:'config.env'});
 
 app.use(bodyParser.urlencoded({ extended: true }))
+app.set('view engine', 'ejs')
+app.use(bodyParser.json());
+app.use(express.static('public'));
 
+console.log(process.env.MONGO_URI);
 
 MongoClient.connect(process.env.MONGO_URI, { 
     useUnifiedTopology: true}) 
     .then(client =>{
       console.log('connected to db')
       const db = client.db('movies')
-      const playersCollection = db.collection('films')  
+      const filmsCollection = db.collection('films')  
       
-      app.set('view engine', 'ejs')
-      app.use(bodyParser.urlencoded({ extended: true }))
-      app.use(bodyParser.json());
-      app.use(express.static('public'));
-      
+      app.get('/', async (req, res) => {
 
-      app.get('/', (req, res) => {
+        console.log("here in /get");
+
+          await db.collection('films').find().toArray()
+          .then(results => {
+            console.log("results:" , results);
+           //res.send("here");
+            res.render('index.ejs', { films: results})
+          })
+          .catch(error => console.error(error))
+        // res.render('index.ejs', {})  
+      })
+
+      app.get('/movies', (req, res) => {
         db.collection('films').find().toArray()
           .then(results => {
-            res.render('index.ejs', { players: results})
+            res.render('index.ejs', { films: results})
           })
           .catch(error => console.error(error))
         // res.render('index.ejs', {})  
       })
 
       app.post('/films', (req, res) => {
-        playersCollection.insertOne(req.body)
+        filmsCollection.insertOne(req.body)
           .then(result => {
             res.redirect('/')
           })
@@ -47,7 +59,7 @@ MongoClient.connect(process.env.MONGO_URI, {
 
       app.post('/deleteFilm/:id', async (req,res)=>{
       
-        let result = await playersCollection.findOneAndDelete( 
+        let result = await filmsCollection.findOneAndDelete( 
           {
             "_id": ObjectId(req.params.id)
           }
@@ -60,7 +72,7 @@ MongoClient.connect(process.env.MONGO_URI, {
       })
 
       app.post('/updateFilm/:id', async (req,res) => {
-        let result = await playersCollection.findOneAndUpdate(
+        let result = await filmsCollection.findOneAndUpdate(
           {
             "_id": ObjectId(req.params.id)
           },
@@ -74,7 +86,10 @@ MongoClient.connect(process.env.MONGO_URI, {
         .catch(error => console.error(error))
       })
 
-      app.listen(process.env.PORT || 3000, 
-        () => console.log("server running"));
+      
   })
 .catch(error => console.error(error))
+
+
+app.listen(process.env.PORT || 3000, 
+  () => console.log("server running"));
